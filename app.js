@@ -4,11 +4,11 @@ let voices = [];
 function loadVoices() {
     voices = synth.getVoices();
 
-    if (voices.lenght === 0) {
+    if (voices.length === 0) {
         return;
     }
 
-    const voiceSelect = DocumentFragment.getElementById("voice-select");
+    const voiceSelect = document.getElementById("voice-select");
     voiceSelect.innerHTML = "";
 
     voices.forEach((voice, index) => {
@@ -18,5 +18,14 @@ function loadVoices() {
         voiceSelect.appendChild(option);
     });
 
-    console.log(`Loaded ${voices.lenght} voices`);
+    console.log(`Loaded ${voices.length} voices`);
 }
+
+function init() {
+    loadVoices();
+
+    // Required for Chrome, Edge, Safari
+    synth.addEventListener("voiceschanged", loadVoices);
+}
+
+document.addEventListener("DOMContentLoaded", init);
