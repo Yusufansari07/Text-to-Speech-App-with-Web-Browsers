@@ -29,3 +29,21 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
+const textInput = document.getElementById("text-input");
+const charCount = document.getElementById("char-count");
+
+function updateCharCount() {
+    const count = textInput.value.length;
+    charCount.textContent = count;
+}
+
+textInput.addEventListener("input" , updateCharCount);
+
+function init() {
+    loadVoices();
+    synth.addEventListener("voiceschanged" , loadVoices);
+
+    textInput.addEventListener("input" , updateCharCount);
+    updateCharCount();
+}
