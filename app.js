@@ -47,3 +47,64 @@ function init() {
     textInput.addEventListener("input" , updateCharCount);
     updateCharCount();
 }
+
+const speakBtn = document.getElementById("speak-btn");
+const stopBtn = document.getElementById("stop-btn");
+const speedSlider = document.getElementById("speed-slider");
+const pitchSlider = document.getElementById("pitch-slider");
+const status = document.getElementById("status");
+const statusText = document.getElementById("status-text");
+
+function speak() {
+  if (synth.speaking) {
+    synth.cancel();
+  }
+
+  const text = textInput.value.trim();
+  if (!text) {
+    alert("Please enter some text to speak");
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(text);
+
+  const selectedVoiceIndex = voiceSelect.value;
+  if (selectedVoiceIndex !== "") {
+    utterance.voice = voices[selectedVoiceIndex];
+  }
+
+  utterance.rate = parseFloat(speedSlider.value);
+  utterance.pitch = parseFloat(pitchSlider.value);
+  utterance.volume = 1.0;
+
+  utterance.onstart = () => {
+    status.classList.add("speaking");
+    statusText.textContent = "Speaking...";
+    speakBtn.disabled = true;
+    stopBtn.disabled = false;
+  };
+
+  utterance.onend = () => {
+    status.classList.remove("speaking");
+    statusText.textContent = "Ready";
+    speakBtn.disabled = false;
+    stopBtn.disabled = true;
+  };
+
+  utterance.onerror = (event) => {
+    console.error("Speech synthesis error:", event);
+    statusText.textContent = "Error occurred";
+    speakBtn.disabled = false;
+    stopBtn.disabled = true;
+  };
+
+  synth.speak(utterance);
+}
+
+function stop() {
+    synth.cancel();
+    status.classList.remove("speaking");
+    statusText.textContent = "stopped";
+    speakBtn.disabled = false;
+    stopBtn.disabled = true;
+}
